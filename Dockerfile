@@ -45,8 +45,6 @@ RUN mkdir -p /tmp/shoutcast && \
     chmod 755 /usr/local/bin/sc_serv && \
     rm -rf /tmp/shoutcast /tmp/shoutcast.tar.gz
 
-# Optional verification
-RUN /usr/local/bin/sc_serv 2>&1 | head -5 || true
 
 # ============================================================
 # Application User
