@@ -184,7 +184,7 @@ HEALTHCHECK \
 # ============================================================
 
 # Leave commented for now while testing
-# USER radio
+USER radio
 
 STOPSIGNAL SIGTERM
 
