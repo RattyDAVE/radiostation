@@ -1,1 +1,46 @@
-<icecast><location>${ICECAST_LOCATION}</location><admin>${ICECAST_ADMIN_EMAIL}</admin><limits><clients>${MAX_CLIENTS}</clients><sources>${MAX_SOURCES}</sources></limits><authentication><source-password>${SOURCE_PW}</source-password><relay-password>${RELAY_PW}</relay-password><admin-user>${ADMIN_USER}</admin-user><admin-password>${ADMIN_PW}</admin-password></authentication><hostname>${HOSTNAME}</hostname><listen-socket><port>${ICECAST_PORT}</port></listen-socket></icecast>
+<icecast>
+    <location>${ICECAST_LOCATION}</location>
+    <admin>${ICECAST_ADMIN_EMAIL}</admin>
+
+    <limits>
+        <clients>${MAX_CLIENTS}</clients>
+        <sources>${MAX_SOURCES}</sources>
+        <queue-size>524288</queue-size>
+        <client-timeout>30</client-timeout>
+        <header-timeout>15</header-timeout>
+        <source-timeout>10</source-timeout>
+        <burst-on-connect>1</burst-on-connect>
+        <burst-size>65535</burst-size>
+    </limits>
+
+    <authentication>
+        <source-password>${SOURCE_PW}</source-password>
+        <relay-password>${RELAY_PW}</relay-password>
+        <admin-user>${ADMIN_USER}</admin-user>
+        <admin-password>${ADMIN_PW}</admin-password>
+    </authentication>
+
+    <hostname>${HOSTNAME}</hostname>
+
+    <listen-socket>
+        <port>${ICECAST_PORT}</port>
+    </listen-socket>
+
+    <fileserve>1</fileserve>
+
+    <paths>
+        <basedir>/usr/share/icecast2</basedir>
+        <logdir>/var/log/icecast2</logdir>
+        <webroot>/usr/share/icecast2/web</webroot>
+        <adminroot>/usr/share/icecast2/admin</adminroot>
+        <alias source="/" destination="/status.xsl"/>
+    </paths>
+
+    <logging>
+        <accesslog>access.log</accesslog>
+        <errorlog>error.log</errorlog>
+        <playlistlog>playlist.log</playlistlog>
+        <loglevel>${LOG_LEVEL}</loglevel>
+        <logsize>10000</logsize>
+    </logging>
+</icecast>
