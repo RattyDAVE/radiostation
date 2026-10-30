@@ -1,0 +1,7 @@
+portbase=${SHOUTCAST_PORT}
+password=${SOURCE_PW}
+adminpassword=${ADMIN_PW}
+streamauthhash=${SHOUTCAST_AUTH_HASH}
+URLFormat=${STATION_URL}
+servername=${STATION_NAME}
+servergenre=${STATION_GENRE}
