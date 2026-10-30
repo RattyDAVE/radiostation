@@ -1,6 +1,6 @@
 FROM ubuntu:24.04
 
-LABEL org.opencontainers.image.title="Radio Server"
+LABEL org.opencontainers.image.title="Internet Radio Server"
 LABEL org.opencontainers.image.description="Icecast + Liquidsoap + SHOUTcast"
 LABEL org.opencontainers.image.version="1.0.0"
 
@@ -45,6 +45,9 @@ RUN mkdir -p /tmp/shoutcast && \
     chmod 755 /usr/local/bin/sc_serv && \
     rm -rf /tmp/shoutcast /tmp/shoutcast.tar.gz
 
+# Optional verification
+RUN /usr/local/bin/sc_serv 2>&1 | head -5 || true
+
 # ============================================================
 # Application User
 # ============================================================
@@ -65,6 +68,8 @@ RUN mkdir -p \
         /config \
         /music \
         /logs \
+        /defaults \
+        /etc/icecast2 \
         /etc/shoutcast \
         /etc/liquidsoap \
         /var/log/icecast2 \
@@ -72,7 +77,34 @@ RUN mkdir -p \
         /var/log/liquidsoap
 
 # ============================================================
-# Default Configuration
+# Default Templates
+# These are copied to /config on first run if missing
+# ============================================================
+
+COPY templates/icecast.xml.template \
+     /defaults/icecast.xml.template
+
+COPY templates/sc_serv.conf.template \
+     /defaults/sc_serv.conf.template
+
+COPY templates/radio.liq.template \
+     /defaults/radio.liq.template
+
+COPY templates/users.txt \
+     /defaults/users.txt
+
+# ============================================================
+# Runtime Files
+# ============================================================
+
+COPY entrypoint.sh /entrypoint.sh
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY logrotate-radio /etc/logrotate.d/radio
+
+RUN chmod 755 /entrypoint.sh
+
+# ============================================================
+# Default Environment Values
 # ============================================================
 
 ENV HOSTNAME=localhost \
@@ -98,23 +130,23 @@ ENV HOSTNAME=localhost \
     MUSIC_DIR=/music
 
 # ============================================================
-# Configuration Files
+# Volumes
 # ============================================================
 
-COPY entrypoint.sh /entrypoint.sh
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY logrotate-radio /etc/logrotate.d/radio
-
-RUN chmod 755 /entrypoint.sh
+VOLUME ["/config"]
+VOLUME ["/music"]
+VOLUME ["/logs"]
 
 # ============================================================
-# Permissions
+# Ownership
 # ============================================================
 
 RUN chown -R radio:radio \
     /config \
     /music \
     /logs \
+    /defaults \
+    /etc/icecast2 \
     /etc/shoutcast \
     /etc/liquidsoap \
     /var/log/icecast2 \
@@ -122,7 +154,7 @@ RUN chown -R radio:radio \
     /var/log/liquidsoap
 
 # ============================================================
-# Network Ports
+# Network
 # ============================================================
 
 EXPOSE 8000
@@ -152,5 +184,7 @@ HEALTHCHECK \
 # ============================================================
 
 USER radio
+
+STOPSIGNAL SIGTERM
 
 ENTRYPOINT ["/entrypoint.sh"]
