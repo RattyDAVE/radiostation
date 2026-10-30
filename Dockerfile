@@ -181,7 +181,7 @@ HEALTHCHECK \
 # Runtime
 # ============================================================
 
-USER radio
+#USER radio
 
 STOPSIGNAL SIGTERM
 
