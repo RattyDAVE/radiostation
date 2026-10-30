@@ -38,7 +38,6 @@ Provides:
  
 Default Port:
  
-```text
 8000
 SHOUTcast
 
@@ -50,7 +49,6 @@ Legacy player compatibility
 
 Default Port:
 
-Plain Text
 8001
 Liquidsoap
 
