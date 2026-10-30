@@ -45,7 +45,6 @@ RUN mkdir -p /tmp/shoutcast && \
     chmod 755 /usr/local/bin/sc_serv && \
     rm -rf /tmp/shoutcast /tmp/shoutcast.tar.gz
 
-
 # ============================================================
 # Application User
 # ============================================================
@@ -76,7 +75,6 @@ RUN mkdir -p \
 
 # ============================================================
 # Default Templates
-# These are copied to /config on first run if missing
 # ============================================================
 
 COPY templates/icecast.xml.template \
@@ -96,7 +94,11 @@ COPY templates/users.txt \
 # ============================================================
 
 COPY entrypoint.sh /entrypoint.sh
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# IMPORTANT:
+# Replace the Ubuntu default supervisord.conf
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+
 COPY logrotate-radio /etc/logrotate.d/radio
 
 RUN chmod 755 /entrypoint.sh
@@ -106,10 +108,10 @@ RUN chmod 755 /entrypoint.sh
 # ============================================================
 
 ENV HOSTNAME=localhost \
-    SOURCE_PW=ChangeMe123456! \
-    RELAY_PW=ChangeMe123456! \
+    SOURCE_PW=RadioSourcePassword123! \
+    RELAY_PW=RadioRelayPassword123! \
     ADMIN_USER=admin \
-    ADMIN_PW=ChangeThisAdminPassword123! \
+    ADMIN_PW=RadioAdminPassword123! \
     SHOUTCAST_AUTH_HASH= \
     ICECAST_LOCATION=Unknown \
     ICECAST_ADMIN_EMAIL=admin@example.com \
@@ -128,7 +130,7 @@ ENV HOSTNAME=localhost \
     MUSIC_DIR=/music
 
 # ============================================================
-# Volumes
+# Docker Volumes
 # ============================================================
 
 VOLUME ["/config"]
@@ -152,7 +154,7 @@ RUN chown -R radio:radio \
     /var/log/liquidsoap
 
 # ============================================================
-# Network
+# Network Ports
 # ============================================================
 
 EXPOSE 8000
@@ -181,7 +183,8 @@ HEALTHCHECK \
 # Runtime
 # ============================================================
 
-#USER radio
+# Leave commented for now while testing
+# USER radio
 
 STOPSIGNAL SIGTERM
 
